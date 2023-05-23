@@ -1,0 +1,17 @@
+.header {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.poster {
+    position: relative;
+    left: 5%;
+}
+
+.details {
+    background-color: #171717;
+    opacity: 0.8;
+    border: none;
+    overflow: hidden;
+    max-width: 40%;
+}
