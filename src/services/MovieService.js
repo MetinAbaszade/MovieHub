@@ -53,10 +53,22 @@ export async function SearchMovies(querry, page) {
     return result;
 }
 
-export async function FilterMovies(rating) {
-    let url = `https://api.themoviedb.org/3/discover/movie?page=1&vote_average.gte=${rating}`
+export async function FilterMovies(page, rating, genre, runtime, year) {
+    let url = `https://api.themoviedb.org/3/discover/movie?page=${page}`
+    if (rating) {
+        url += `&vote_average.gte=${rating}`
+    }
+    if (genre) {
+        url += `&with_genres=${genre}`
+    }
+    if (runtime) {
+        url += `&with_runtime.gte=${runtime}`
+    }
+    if (year) {
+        url += `&primary_release_year=${year}`
+    }
+    
     var result = await get(url);
-    console.log(result.results)
     return result;
 }
 

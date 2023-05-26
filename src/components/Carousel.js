@@ -1,9 +1,9 @@
 import React from 'react';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
-import Item from './Item';
+import Movie from './Movie';
 
-export default function Carousel() {
+export default function Carousel({ movies }) {
     const responsive = {
         0: {
             items: 1,
@@ -19,14 +19,10 @@ export default function Carousel() {
         },
     };
 
-    const items = [
-        <Item backgroundImage={"url(/img/slide1.png)"}/>,
-        <Item backgroundImage={"url(/img/slide2.png)"} />,
-        <Item backgroundImage={"url(/img/slide3.png)"} />,
-        <Item backgroundImage={"url(/img/slide4.jpg)"} />,
-        <Item backgroundImage={"url(/img/hero-area.png)"} />,
-        <Item backgroundImage={"url(/img/slide2.png)"} />
-    ];
+    const items = movies.map((movie) => (
+        <Movie key={movie.id} movie={movie} />
+    ));
+
 
     return(
         <AliceCarousel 

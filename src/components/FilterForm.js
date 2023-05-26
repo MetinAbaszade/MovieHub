@@ -1,15 +1,19 @@
-import React from 'react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Formik, Field, Form, ErrorMessage, useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { MovieService } from '../services';
+import { GetMovieGenres } from '../services/MovieService';
 
 const FilterForm = ({ setMovies }) => {
-    const initialValues = {
-        category: '',
-        rating: '',
-        duration: '',
-        year: '',
-    };
+    const [genres, setGenres] = useState([]);
+
+    useEffect(() => {
+        const fetchMovieGenres = async () => {
+            var result = await GetMovieGenres()
+            setGenres([...result.genres]);
+        };
+        fetchMovieGenres();
+    }, []);
 
     const validationSchema = Yup.object({
         rating: Yup.number().min(0).max(10).nullable(),
@@ -17,49 +21,53 @@ const FilterForm = ({ setMovies }) => {
         year: Yup.number().min(1900).max(2099).nullable(),
     });
 
-    const onSubmit = async (values) => {
-        // console.log('Category:', values.category);
-        // console.log('Rating:', values.rating);
-        // console.log('Duration:', values.duration);
-        // console.log('Year:', values.year);
-
-        let result = await MovieService.FilterMovies(values.rating);
-        setMovies([...result.results])
-    };
+    const formik = useFormik({
+        initialValues: {
+            genre: '',
+            rating: '0',
+            duration: '',
+            year: '',
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+            let result = await MovieService.FilterMovies(1, values.rating, values.genre, values.duration, values.year);
+            setMovies([...result.results]);
+            console.log(values)
+        },
+    });
 
     return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            <Form className="max-w-lg mx-auto p-4">
+        <FormikProvider value={formik}>
+            <Form className="w-100 py-4" onSubmit={formik.handleSubmit}>
                 <div className="mb-4">
-                    <label htmlFor="category" className="block text-white font-semibold">
-                        Category
+                    <label htmlFor="genre" className="block text-white font-semibold">
+                        Genre
                     </label>
                     <Field
                         as="select"
-                        id="category"
-                        name="category"
+                        id="genre"
+                        name="genre"
                         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     >
                         <option value="">All</option>
-                        <option value="action">Action</option>
-                        <option value="comedy">Comedy</option>
-                        <option value="drama">Drama</option>
-                        {/* Add more category options here */}
+                        {genres.map((genre) => (
+                            <option key={genre.id} value={genre.id}>{genre.name}</option>
+                        ))}
                     </Field>
                 </div>
 
                 <div className="mb-4">
                     <label htmlFor="rating" className="block text-white font-semibold">
-                        Rating
+                        Rating: {formik.values.rating}
                     </label>
                     <Field
-                        type="number"
+                        type="range"
                         id="rating"
                         name="rating"
-                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                         min="0"
                         max="10"
-                        step="0.1"
+                        step="1"
                     />
                     <ErrorMessage name="rating" component="div" className="text-red-500" />
                 </div>
@@ -97,7 +105,7 @@ const FilterForm = ({ setMovies }) => {
                     Filter
                 </button>
             </Form>
-        </Formik>
+        </FormikProvider>
     );
 };
 

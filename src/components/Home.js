@@ -3,7 +3,7 @@ import '..//assets/style.css'
 import '..//assets/responsive.css'
 import Carousel from './Carousel'
 import { MovieService } from '../services'
-import Item from './Item'
+import Movie from './Movie'
 import FilterForm from './FilterForm'
 import { useLocation } from 'react-router-dom'
 import useIntersectionObserver from './useIntersectionObserver'
@@ -16,8 +16,6 @@ export default function Home() {
     const [lastMoviePage, setLastMoviePage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const bottomBoundaryRef = useRef(null);
-
-
     const isIntersecting = useIntersectionObserver(bottomBoundaryRef, { threshold: 1 });
 
     function scrollToTop() {
@@ -41,7 +39,6 @@ export default function Home() {
 
 
     useEffect(() => {
-        console.log("Component mounteeeed")
         const fetchMovies = async () => {
             var result = await GetMovies(activeCategory, 1)
             setMovies([...result.results]);
@@ -104,24 +101,9 @@ export default function Home() {
         <>
             <header className="header">
                 <div className="container">
-                    <div className="header-area">
+                    <div className="header-area mb-3            ">
                         <div className="logo">
                             <a href="index-2.html"><img src="/img/logo.png" alt="logo" /></a>
-                        </div>
-                        <div className="header-right">
-                            <form action="#">
-                                <select>
-                                    <option value="Movies">Movies</option>
-                                    <option value="Movies">Movies</option>
-                                    <option value="Movies">Movies</option>
-                                </select>
-                                <input type="text" onChange={SearchChangeHandle} />
-                                <button><i className="icofont icofont-search"></i></button>
-                            </form>
-                            <ul>
-                                <li><a href="#">Welcome Guest!</a></li>
-                                <li><a className="login-popup" href="#">Login</a></li>
-                            </ul>
                         </div>
                         <div className="menu-area">
                             <div className="responsive-menu"></div>
@@ -143,7 +125,7 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                    <Carousel />
+                    <Carousel movies={movies.slice(0, 6)} />
                 </div>
             </header>
 
@@ -184,10 +166,15 @@ export default function Home() {
                     {/* Latest / Comming Soon / Top Rated / Recently Released */}
                     <div id='searchandfilter'>
                         <div className="row flexbox-center">
-                            <div className="col-lg-6 text-center text-lg-left">
-                                <div className="section-title">
-                                    <h1><i className="icofont icofont-movie"></i> Spotlight This Month</h1>
-                                </div>
+                            <div className="header-right">
+                                <form action="#">
+                                    <select>
+                                        <option value="Movies">Movies</option>
+                                        <option value="Movies">Tv Series</option>
+                                    </select>
+                                    <input type="text" onChange={SearchChangeHandle} />
+                                    <button><i className="icofont icofont-search"></i></button>
+                                </form>
                             </div>
                             <div className="col-lg-6 text-center text-lg-right">
                                 <div className="portfolio-menu">
@@ -210,12 +197,12 @@ export default function Home() {
                     <div className="d-flex">
                         <div className="col-lg-9 d-flex flex-wrap justify-content-between mx-4">
                             {movies.map((movie) => (
-                                <Item key={movie.id} movie={movie} />
+                                <Movie key={movie.id} movie={movie} />
                             ))}
                             <div id='boundary' ref={bottomBoundaryRef}></div>
                         </div>
-                        <div className="col-lg-3 text-center text-lg-left">
-                            <FilterForm setMovies={setMovies}/>
+                        <div className="text-center text-lg-left">
+                            <FilterForm setMovies={setMovies} />
                         </div>
                     </div>
                 </div>
