@@ -20,7 +20,7 @@ export default function Carousel({ movies }) {
     };
 
     const items = movies.map((movie) => (
-        <Movie key={movie.id} movie={movie} />
+        <Movie key={movie.id} movieDetails={movie} />
     ));
 
 
@@ -29,7 +29,7 @@ export default function Carousel({ movies }) {
             items={items}
             responsive={responsive}
             autoPlay
-            autoPlayInterval={1000}
+            autoPlayInterval={2000}
             controlsStrategy="responsive"
             infinite
             disableButtonsControls 

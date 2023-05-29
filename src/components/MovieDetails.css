@@ -25,16 +25,27 @@ label{
 }
 
 ::-webkit-scrollbar {
-    width: 20px;
+    width: 12px;
    
 }
 
 ::-webkit-scrollbar-thumb {
     background-color: #718096;
-    border-radius: 15px;
+    border-radius: 7px;
 }
 
 ::-webkit-scrollbar-track {
     background-color: #CBD5E0;
-    border-radius: 15px;
+    border-radius: 7px;
+}
+
+iframe{
+    height: 400px;
+}
+
+.tag{
+    border-radius: 10px;
+    margin: 5px;
+    background-color:  gray; 
+    padding: 5px;
 }

@@ -321,7 +321,7 @@ input::-webkit-input-placeholder {
 -------- HEADER AREA CSS START --------
 ---------------------------------------*/
 .header {
-    background-image: url('./img/hero-area.png');
+    background-image: url('./img/header_background.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -331,9 +331,18 @@ input::-webkit-input-placeholder {
     left: 0;
     width: 100%;
     z-index: 99;
-
+        display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
+.center-carousel {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
 
 #boundary {
     height: 0;
@@ -539,6 +548,7 @@ hr {
 .single-portfolio {
     margin-top: 50px;
     width: 300px;
+    margin: auto;
 }
 
 .video-area,
@@ -628,9 +638,37 @@ hr {
 
 .score {
     position: absolute;
-    left: 10;
-
     bottom: 0;
+}
+
+.save-movie-button {
+    position: absolute;
+    right: 40px;
+    margin: 10px 5px 0 0;
+    top: 0;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+ 
+
+.saved svg path {
+    fill: rgb(250 204 21);
+    stroke: none;
+}
+
+.save-movie-link {
+    border-radius: 50%;
+    padding: 7px;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+
+.save-movie-link:hover svg path {
+    fill: rgb(250 204 21);
+    stroke: none;
 }
 
 
@@ -991,128 +1029,6 @@ hr {
 ----- Movie details PAGE CSS END ----
 -----------------------------------*/
 
-
-/*----------------------------------
--------- login PAGE CSS START -------
-------------------------------------*/
-
-/*----------------------------------
---------- login PAGE CSS END --------
------------------------------------*/
-.login-area {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    display: none;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 99;
-    padding: 0 15px;
-}
-
-.login-box {
-    max-width: 380px;
-    background: #fff;
-    position: relative;
-    color: #03090e;
-    margin: 200px auto 0;
-    padding: 40px 25px 25px;
-}
-
-.login-box a {
-    color: #03090e;
-}
-
-.login-box>a {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: #eb315a;
-    font-size: 22px;
-    color: #fff;
-    width: 35px;
-    height: 35px;
-    text-align: center;
-    line-height: 35px;
-}
-
-.login-box h2 {
-    text-align: center;
-    color: #03090e;
-    margin-bottom: 20px;
-}
-
-.login-box h6 {}
-
-.login-box h6 {
-    color: #03090e;
-    margin-bottom: 12px;
-}
-
-.login-box input {
-    margin-bottom: 20px;
-    background: transparent;
-    border: 1px solid #ddd;
-}
-
-.login-signup {
-    float: right;
-}
-
-.login-remember {
-    float: left;
-}
-
-.login-signup a {
-    color: #008aff;
-}
-
-.login-box form .theme-btn {
-    width: 100%;
-    border-radius: 0;
-    color: #fff;
-    text-align: center;
-    margin-top: 5px;
-}
-
-.login-box form .theme-btn+span {
-    margin: 22px 0;
-    display: block;
-}
-
-.login-social {
-    display: flex;
-    justify-content: space-between;
-}
-
-.login-social a i {
-    width: 45px;
-    display: inline-block;
-    height: 45px;
-    font-size: 20px;
-    line-height: 45px;
-    color: #fff;
-    background: #3a559f;
-    text-align: center;
-}
-
-.login-social a i.icofont-social-twitter {
-    background: #50abf1;
-}
-
-.login-social a i.icofont-social-linkedin {
-    background: #dd4b39;
-}
-
-.login-social a i.icofont-social-google-plus {
-    background: #0084b1;
-}
-
-.login-social a i.icofont-camera {
-    background: #c536a4;
-}
 
 /*----------------------------------
 -------- blog PAGE CSS START -------

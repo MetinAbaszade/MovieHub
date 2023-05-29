@@ -1,12 +1,17 @@
 import React from 'react';
-import { createHashRouter, RouterProvider, Routes, Route, ScrollRestoration } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import Home from './Home';
 import MovieDetails from './MovieDetails';
+import SavedMovies from './SavedMovies';
 
 const router = createHashRouter([
     {
         path: "/",
         element: <Home />,
+    },
+    {
+        path: "/savedmovies",
+        element: <SavedMovies />,
     },
     {
         path: "/movie/:id",
@@ -16,13 +21,7 @@ const router = createHashRouter([
 
 const AppRoutes = () => {
     return (
-        <RouterProvider router={router}>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/movie/:id" element={<MovieDetails />} />
-            </Routes>
-           
-        </RouterProvider>
+        <RouterProvider router={router} />
     );
 }
 

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Formik, Field, Form, ErrorMessage, useFormik, FormikProvider } from 'formik';
+import { Field, Form, ErrorMessage, useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
-import { MovieService } from '../services';
 import { GetMovieGenres } from '../services/MovieService';
 
-const FilterForm = ({ setMovies }) => {
+const FilterForm = ({ setFilter }) => {
     const [genres, setGenres] = useState([]);
 
     useEffect(() => {
         const fetchMovieGenres = async () => {
-            var result = await GetMovieGenres()
+            let result = await GetMovieGenres()
             setGenres([...result.genres]);
         };
         fetchMovieGenres();
@@ -30,9 +29,7 @@ const FilterForm = ({ setMovies }) => {
         },
         validationSchema,
         onSubmit: async (values) => {
-            let result = await MovieService.FilterMovies(1, values.rating, values.genre, values.duration, values.year);
-            setMovies([...result.results]);
-            console.log(values)
+            setFilter({ ...values })
         },
     });
 

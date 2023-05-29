@@ -1,165 +1,111 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import '..//assets/style.css'
-import '..//assets/responsive.css'
-import Carousel from './Carousel'
-import { MovieService } from '../services'
-import Movie from './Movie'
-import FilterForm from './FilterForm'
-import { useLocation } from 'react-router-dom'
+// Libraries
+import React, { useEffect, useRef, useState } from 'react'
+import { debounce } from 'lodash';
+// Services
+import { CookieService, MovieService } from '../services'
+// Custom Hooks
 import useIntersectionObserver from './useIntersectionObserver'
+// Components
+import Navbar from './Navbar'
+import Footer from './Footer'
+import Carousel from './Carousel'
+import MovieList from './MovieList'
+import FilterForm from './FilterForm'
+// Styles
+import '../assets/style.css'
+import '../assets/responsive.css'
+
+const INITIAL_PAGE = 1;
 
 export default function Home() {
     const [movies, setMovies] = useState([]);
-
-    const location = useLocation();
-    const [activeCategory, setActiveCategory] = useState('popular');
-    const [lastMoviePage, setLastMoviePage] = useState(1);
+    const [popularMovies, setPopularMovies] = useState([]);
+    const [filter, setFilter] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [lastMoviePage, setLastMoviePage] = useState(INITIAL_PAGE);
+    const [activeCategory, setActiveCategory] = useState('popular');
+    // This useRef is used for implementing infinite scroll
     const bottomBoundaryRef = useRef(null);
+    // useIntersectionObserver is a custom hook for observing when user reached to the end of the movie list
     const isIntersecting = useIntersectionObserver(bottomBoundaryRef, { threshold: 1 });
 
-    function scrollToTop() {
-        console.log("scrool icinde ay qa")
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"  // for smooth scrolling
-        });
-    }
+
+    // This function fetches movies from API
+    async function fetchMovies(page) {
+        setIsLoading(true);
+
+        const cookieData = CookieService.getCookieData('savedMovies');
+        const savedMovieIds = cookieData || [];
+
+        try {
+            const result = await MovieService.GetMovies(activeCategory, page, filter)
+
+            // NOTE: map is "pure" function, it does not mutate or modify anything, instead it returns new array
+            result.results = result.results.map(movie => ({
+                ...movie,
+                saved: savedMovieIds.includes(movie.id)
+            }));
+
+            setIsLoading(false);
+            return result.results;
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     useEffect(() => {
+        console.log("insideeee")
+        fetchMovies(INITIAL_PAGE)
+            .then(fetchedMovies => setPopularMovies(fetchedMovies));
+    }, [])
+
+
+    // This useEffect hook fetches movies when Category or filter have been changed
+    useEffect(() => {
+        setLastMoviePage(INITIAL_PAGE);
+        fetchMovies(INITIAL_PAGE)
+            .then(fetchedMovies => setMovies(fetchedMovies));
+    }, [activeCategory, filter])
+
+    // This useEffect hook is for handling infinite scroll and loading more movies
+    useEffect(() => {
         if (isIntersecting && !isLoading) {
-            const fetchMovies = async () => {
-                var result = await GetMovies(activeCategory, lastMoviePage + 1);
-                setMovies((prevstate) => [...prevstate, ...result.results]);
-                setLastMoviePage((prevstate) => prevstate + 1)
-            };
-            fetchMovies();
+            fetchMovies(lastMoviePage + 1)
+                .then(fetchedMovies => { setMovies((prevState) => [...prevState, ...fetchedMovies]);});
+            setLastMoviePage((prevState) => prevState + 1);
         }
     }, [isIntersecting]);
 
 
-    useEffect(() => {
-        const fetchMovies = async () => {
-            var result = await GetMovies(activeCategory, 1)
-            setMovies([...result.results]);
-        };
-        fetchMovies();
-    }, []);
-
-    // useEffect(() => {
-    //   //  scrollToTop();
-    // }, [movies]); 
-
-    async function SearchChangeHandle(e) {
-        let movietitle = e.target.value;
+    async function handleSearchChange(e) {
+        const movietitle = e.target.value;
         if (movietitle) {
-            const result = await MovieService.SearchMovies(movietitle, 1);
-            setMovies([...result.results]);
-            return;
+            try {
+                const result = await MovieService.SearchMovies(movietitle, INITIAL_PAGE);
+                setMovies([...result.results]);
+                return;
+            } catch (error) {
+                console.log(error)
+            }
         }
-        const result = await MovieService.GetPopularMovies();
-        setMovies(result.results);
+        fetchMovies(INITIAL_PAGE);
+        setLastMoviePage(INITIAL_PAGE);
     }
 
-    async function CategoryChangeHandle(category) {
-        if (category != activeCategory) {
-            setActiveCategory(category);
-            setLastMoviePage(1)
-            var result = await GetMovies(category, 1)
-            console.log(category)
-            console.log(result.results)
-            setMovies([...result.results]);
-        }
-    }
+    const debouncedSearch = debounce(handleSearchChange, 300);
 
-    async function GetMovies(category, page) {
-        let result;
-        setIsLoading(true);
-        switch (category) {
-            case "popular":
-                result = await MovieService.GetPopularMovies(page);
-                break;
-            case "now-playing":
-                result = await MovieService.GetNowPlayingMovies(page);
-                break;
-            case "top-rated":
-                result = await MovieService.GetTopRatedMovies(page);
-                break;
-            case "upcoming":
-                result = await MovieService.GetUpcomingMovies(page);
-                break;
-            default:
-                result = await MovieService.GetPopularMovies();
-                break;
-        }
-        setIsLoading(false);
-        return result;
-    }
-
+    function handleCategoryClick(category) {
+        setActiveCategory(category);
+    };
 
     return (
         <>
             <header className="header">
                 <div className="container">
-                    <div className="header-area mb-3            ">
-                        <div className="logo">
-                            <a href="index-2.html"><img src="/img/logo.png" alt="logo" /></a>
-                        </div>
-                        <div className="menu-area">
-                            <div className="responsive-menu"></div>
-                            <div className="mainmenu">
-                                <ul id="primary-menu">
-                                    <li><a className="active" href="index-2.html">Home</a></li>
-                                    <li><a href="movies.html">Movies</a></li>
-                                    <li><a href="celebrities.html">CelebritiesList</a></li>
-                                    <li><a href="top-movies.html">Top Movies</a></li>
-                                    <li><a href="blog.html">News</a></li>
-                                    <li><a href="#">Pages <i className="icofont icofont-simple-down"></i></a>
-                                        <ul>
-                                            <li><a href="blog-details.html">Blog Details</a></li>
-                                            <li><a href="movie-details.html">Movie Details</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a className="theme-btn" href="#"><i className="icofont icofont-ticket"></i> Tickets</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <Carousel movies={movies.slice(0, 6)} />
+                    <Navbar />
+                    <Carousel movies={popularMovies.slice(0, 6)} />
                 </div>
             </header>
-
-            <div className="login-area">
-                <div className="login-box">
-                    <a href="#"><i className="icofont icofont-close"></i></a>
-                    <h2>LOGIN</h2>
-                    <form action="#">
-                        <h6>USERNAME OR EMAIL ADDRESS</h6>
-                        <input type="text" />
-                        <h6>PASSWORD</h6>
-                        <input type="text" />
-                        <div className="login-remember">
-                            <input type="checkbox" />
-                            <span>Remember Me</span>
-                        </div>
-                        <div className="login-signup">
-                            <span>SIGNUP</span>
-                        </div>
-                        <a href="#" className="theme-btn">LOG IN</a>
-                        <span>Or Via Social</span>
-                        <div className="login-social">
-                            <a href="#"><i className="icofont icofont-social-facebook"></i></a>
-                            <a href="#"><i className="icofont icofont-social-twitter"></i></a>
-                            <a href="#"><i className="icofont icofont-social-linkedin"></i></a>
-                            <a href="#"><i className="icofont icofont-social-google-plus"></i></a>
-                            <a href="#"><i className="icofont icofont-camera"></i></a>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-
-
 
             <section className="portfolio-area pt-60">
                 <div className="container">
@@ -168,24 +114,20 @@ export default function Home() {
                         <div className="row flexbox-center">
                             <div className="header-right">
                                 <form action="#">
-                                    <select>
-                                        <option value="Movies">Movies</option>
-                                        <option value="Movies">Tv Series</option>
-                                    </select>
-                                    <input type="text" onChange={SearchChangeHandle} />
+                                    <input type="text" onChange={debouncedSearch} />
                                     <button><i className="icofont icofont-search"></i></button>
                                 </form>
                             </div>
                             <div className="col-lg-6 text-center text-lg-right">
                                 <div className="portfolio-menu">
                                     <ul>
-                                        <li onClick={() => { CategoryChangeHandle('popular') }}
+                                        <li onClick={handleCategoryClick.bind(null, 'popular')}
                                             className={activeCategory === 'popular' ? 'active' : ''}>Popular</li>
-                                        <li onClick={() => { CategoryChangeHandle('now-playing') }}
-                                            className={activeCategory === 'now-playing' ? 'active' : ''}>Now Playing</li>
-                                        <li onClick={() => { CategoryChangeHandle('top-rated') }}
-                                            className={activeCategory === 'top-rated' ? 'active' : ''}>Top Rated</li>
-                                        <li onClick={() => { CategoryChangeHandle('upcoming') }}
+                                        <li onClick={handleCategoryClick.bind(null, 'now_playing')}
+                                            className={activeCategory === 'now_playing' ? 'active' : ''}>Now Playing</li>
+                                        <li onClick={handleCategoryClick.bind(null, 'top_rated')}
+                                            className={activeCategory === 'top_rated' ? 'active' : ''}>Top Rated</li>
+                                        <li onClick={handleCategoryClick.bind(null, 'upcoming')}
                                             className={activeCategory === 'upcoming' ? 'active' : ''}>Upcoming Movies</li>
                                     </ul>
                                 </div>
@@ -195,14 +137,14 @@ export default function Home() {
                     </div>
 
                     <div className="d-flex">
-                        <div className="col-lg-9 d-flex flex-wrap justify-content-between mx-4">
-                            {movies.map((movie) => (
-                                <Movie key={movie.id} movie={movie} />
-                            ))}
-                            <div id='boundary' ref={bottomBoundaryRef}></div>
+                        <div className='col-lg-9'>
+
+                            <MovieList movies={movies} />
+                            {movies.length >= 20 && <div id="boundary" ref={bottomBoundaryRef}></div>}
                         </div>
                         <div className="text-center text-lg-left">
-                            <FilterForm setMovies={setMovies} />
+                            <FilterForm setMovies={setMovies} activeCategory={activeCategory} setFilter={setFilter}
+                                filter={filter} />
                         </div>
                     </div>
                 </div>
@@ -287,7 +229,7 @@ export default function Home() {
                                 <h2>The Witch Queen</h2>
                                 <p>Witch Queen is a tall woman with a slim build. She has pink hair, which is pulled up under her hat, and teal eyes.</p>
                             </div>
-                            <a href="#">Read More</a>
+                            <a href="/">Read More</a>
                         </div>
                         <div className="single-news">
                             <div className="news-bg-2"></div>
@@ -299,7 +241,7 @@ export default function Home() {
                                 <h2>The Witch Queen</h2>
                                 <p>Witch Queen is a tall woman with a slim build. She has pink hair, which is pulled up under her hat, and teal eyes.</p>
                             </div>
-                            <a href="#">Read More</a>
+                            <a href="/">Read More</a>
                         </div>
                         <div className="single-news">
                             <div className="news-bg-3"></div>
@@ -311,7 +253,7 @@ export default function Home() {
                                 <h2>The Witch Queen</h2>
                                 <p>Witch Queen is a tall woman with a slim build. She has pink hair, which is pulled up under her hat, and teal eyes.</p>
                             </div>
-                            <a href="#">Read More</a>
+                            <a href="/">Read More</a>
                         </div>
                     </div>
                     <div className="news-thumb">
@@ -326,7 +268,7 @@ export default function Home() {
                                     <h2>The Witch Queen</h2>
                                     <p>Witch Queen is a tall woman with a slim build. She has pink hair, which is pulled up under her hat, and teal eyes.</p>
                                 </div>
-                                <a href="#">Read More</a>
+                                <a href="/">Read More</a>
                             </div>
                         </div>
                         <div className="news-prev">
@@ -340,77 +282,14 @@ export default function Home() {
                                     <h2>The Witch Queen</h2>
                                     <p>Witch Queen is a tall woman with a slim build. She has pink hair, which is pulled up under her hat, and teal eyes.</p>
                                 </div>
-                                <a href="#">Read More</a>
+                                <a href="/">Read More</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <footer className="footer">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-3 col-sm-6">
-                            <div className="widget">
-                                <img src="/img/logo.png" alt="about" />
-                                <p>7th Harley Place, London W1G 8LZ United Kingdom</p>
-                                <h6><span>Call us: </span>(+880) 111 222 3456</h6>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-sm-6">
-                            <div className="widget">
-                                <h4>Legal</h4>
-                                <ul>
-                                    <li><a href="#">Terms of Use</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
-                                    <li><a href="#">Security</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-sm-6">
-                            <div className="widget">
-                                <h4>Account</h4>
-                                <ul>
-                                    <li><a href="#">My Account</a></li>
-                                    <li><a href="#">Watchlist</a></li>
-                                    <li><a href="#">Collections</a></li>
-                                    <li><a href="#">User Guide</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-sm-6">
-                            <div className="widget">
-                                <h4>Newsletter</h4>
-                                <p>Subscribe to our newsletter system now to get latest news from us.</p>
-                                <form action="#">
-                                    <input type="text" placeholder="Enter your email.." />
-                                    <button>SUBSCRIBE NOW</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-                <div className="copyright">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-lg-6 text-center text-lg-left">
-                                <div className="copyright-content">
-                                    <p><a target="_blank" href="https://www.templateshub.net">Templates Hub</a></p>
-                                </div>
-                            </div>
-                            <div className="col-lg-6 text-center text-lg-right">
-                                <div className="copyright-content">
-                                    <a href="#" className="scrollToTop">
-                                        Back to top<i className="icofont icofont-arrow-up"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-
+            <Footer />
         </>
     )
 }
