@@ -38,6 +38,33 @@ body {
     position: relative;
 }
 
+
+.footer {
+    margin-top: auto;
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
+.search-input{
+    border: 1px solid white!important;
+    background-color: transparent!important;
+    border-radius: 5px;
+    width: 55%!important;
+    flex-grow: 1;
+}
+
+
+
 /*----------------------------
 ---------- RESET CSS ---------
 ----------------------------*/
@@ -349,13 +376,11 @@ input::-webkit-input-placeholder {
     width: 0;
 }
 
-#searchandfilter {
-    position: sticky;
-    top: 0;
-    background-color: #13151f;
-    ;
-
-    z-index: 9999;
+.sticky {
+    position: sticky!important;
+    top: 0!important;
+    background-color: #13151f!important;;
+    z-index: 9999!important;
 }
 
 .alice-carousel__dots {
@@ -473,16 +498,7 @@ option {
     -webkit-appearance: none;
     appearance: none;
 }
-
-.header-right form input {
-    width: auto;
-    background: transparent;
-    color: #fff;
-    border: none;
-    margin: 0;
-    border-left: 1px solid #ddd;
-    margin-left: 20px;
-}
+ 
 
 .header-right ul li a:hover {
     color: #eb315a;
@@ -515,7 +531,8 @@ hr {
 .portfolio-menu li {
     display: inline-block;
     position: relative;
-    margin-left: 15px;
+    margin: 0 15px 0 15px;
+    margin-left: px;
     padding-bottom: 20px;
     cursor: pointer;
 }
@@ -680,98 +697,6 @@ hr {
 --------- video AREA CSS END --------
 -----------------------------------*/
 
-/*----------------------------------
--------- news AREA CSS START -------
-------------------------------------*/
-.single-news {
-    position: relative;
-    color: #fff;
-}
-
-.news-content {
-    position: absolute;
-    left: 60px;
-    bottom: 35px;
-    right: 420px;
-}
-
-.news-bg-1 {
-    background: url('./img/news/news1.jpg') no-repeat center / cover;
-    height: 350px;
-}
-
-.news-bg-2 {
-    background: url('./img/news/news2.jpg') no-repeat center / cover;
-    height: 350px;
-}
-
-.news-bg-3 {
-    background: url('./img/news/news3.jpg') no-repeat center / cover;
-    height: 350px;
-}
-
-.news-date {
-    position: absolute;
-    left: 60px;
-    top: 0;
-    background: #f09819;
-    /* Old browsers */
-    background: -moz-linear-gradient(-45deg, #f09819 0%, #ef8128 34%, #ec474c 64%, #eb315a 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(-45deg, #f09819 0%, #ef8128 34%, #ec474c 64%, #eb315a 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(135deg, #f09819 0%, #ef8128 34%, #ec474c 64%, #eb315a 100%);
-    padding: 20px;
-}
-
-.news-date h2 span {
-    font-size: 16px;
-}
-
-.news-content>h2 {
-    margin-bottom: 15px;
-}
-
-.news-slider .single-news {
-    max-width: 950px;
-    margin: 50px auto 0;
-}
-
-.single-news a {
-    position: absolute;
-    right: 40px;
-    bottom: 40px;
-}
-
-.news-slide-area {
-    position: relative;
-    overflow: hidden;
-}
-
-.news-next {
-    position: absolute;
-    width: 950px;
-    bottom: 0;
-    left: 0;
-    margin-left: -770px;
-    z-index: 99;
-    cursor: pointer;
-}
-
-.news-prev {
-    position: absolute;
-    width: 950px;
-    bottom: 0;
-    right: 0;
-    margin-right: -770px;
-    z-index: 99;
-    cursor: pointer;
-    height: 350px;
-}
-
-/*----------------------------------
---------- news AREA CSS END --------
------------------------------------*/
 
 /*----------------------------------
 --------- footer AREA CSS START --------
@@ -1116,21 +1041,4 @@ hr {
 /*----------------------------------
 ---------  blog details PAGE CSS END --------
 -----------------------------------*/
-
-/*--------------------------------------
--------- Pre Loader Style START --------
----------------------------------------*/
-#preloader {
-    position: fixed;
-    z-index: 99999999999;
-    top: 0;
-    left: 0;
-    overflow: visible;
-    width: 100%;
-    height: 100%;
-    background: #fff url("./img/loader.gif") no-repeat center center;
-}
-
-/*--------------------------------------
---------- Pre Loader Style END ---------
----------------------------------------*/
+ 

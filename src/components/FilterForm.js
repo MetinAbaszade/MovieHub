@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Field, Form, ErrorMessage, useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
-import { GetMovieGenres } from '../services/MovieService';
+import { getMovieGenres } from '../services/MovieService';
 
 const FilterForm = ({ setFilter }) => {
     const [genres, setGenres] = useState([]);
 
     useEffect(() => {
         const fetchMovieGenres = async () => {
-            let result = await GetMovieGenres()
+            let result = await getMovieGenres()
             setGenres([...result.genres]);
         };
         fetchMovieGenres();
@@ -16,7 +16,7 @@ const FilterForm = ({ setFilter }) => {
 
     const validationSchema = Yup.object({
         rating: Yup.number().min(0).max(10).nullable(),
-        duration: Yup.number().min(0).nullable(),
+        runtime: Yup.number().min(0).nullable(),
         year: Yup.number().min(1900).max(2099).nullable(),
     });
 
@@ -24,7 +24,7 @@ const FilterForm = ({ setFilter }) => {
         initialValues: {
             genre: '',
             rating: '0',
-            duration: '',
+            runtime: '',
             year: '',
         },
         validationSchema,
@@ -70,17 +70,17 @@ const FilterForm = ({ setFilter }) => {
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="duration" className="block text-white font-semibold">
-                        Duration
+                    <label htmlFor="runtime" className="block text-white font-semibold">
+                        Runtime - min
                     </label>
                     <Field
                         type="number"
-                        id="duration"
-                        name="duration"
+                        id="runtime"
+                        name="runtime"
                         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         min="0"
                     />
-                    <ErrorMessage name="duration" component="div" className="text-red-500" />
+                    <ErrorMessage name="runtime" component="div" className="text-red-500" />
                 </div>
 
                 <div className="mb-4">

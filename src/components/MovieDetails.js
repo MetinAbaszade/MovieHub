@@ -1,74 +1,103 @@
-        import React, { useEffect, useState } from 'react'
-        import { MovieService } from '../services'
-        import { useParams } from 'react-router-dom';
-        import Movie from './Movie'
-        import './MovieDetails.css'
-        import CastMember from './CastMember';
-        import Footer from './Footer';
+// Libraries
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'; 
+// Services
+import { MovieService } from '../services'
+import { toggleSaveMovie } from '../redux/savedMoviesSlice';
+// Components
+import Movie from './Movie'
+import Footer from './main/Footer';
 import Navbar from './Navbar';
+import CastMember from './CastMember';
+// Styles
+import '../assets/MovieDetails.css'
 
-        export default function MovieDetails() {
-            const { id } = useParams();
-            const [movie, setMovie] = useState(null);
+export default function MovieDetails() {
+    const { id } = useParams();
+    const [movie, setMovie] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch();
 
-            function scrollToTop() {
-                window.scrollTo({
-                    top: 0
-                });
-            }
+    const selectIsMovieSaved = (state, movieId) => state.savedMovies.includes(Number(movieId));
+    const isMovieSaved = useSelector(state => selectIsMovieSaved(state, id));
 
-            useEffect(() => {
-                async function GetMovieDetails() {
-                    scrollToTop();
-                    const movieDetails = await MovieService.GetMovieDetails(id);
-                    const movieCast = await MovieService.GetMovieCast(id);
-                    const movieExternalLinks = await MovieService.GetMovieExternalLinks(id);
-                    const movieTags = await MovieService.GetMovieTags(id);
-                    const movieVideos = await MovieService.GetMovieVideos(id);
-                    const similarMovies = await MovieService.GetSimilarMovies(id, 1);
-                    let latestTrailer;
+    function toggleSaveMovieHandle(event) {
+        event.preventDefault();
+        dispatch(toggleSaveMovie(Number(id)))
+    }
 
-                    const movieCrew = movieCast.crew.filter(member => {
-                        return member.job === "Director" || member.job === "Writer" || member.job === "Characters";
-                    });
-                    
-                    if (movieVideos.results.length > 0) {
-                        const movieTrailers = movieVideos.results.filter((video) => video.type === 'Trailer');
-                        if (movieTrailers.length > 0) {
-                            latestTrailer = movieTrailers.reduce((prev, current) => {
-                                return (new Date(current.published_at) > new Date(prev.published_at)) ? current : prev;
-                            });
-                        }
-                    }
 
-                    console.log(movieDetails)
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0
+        });
+    }
 
-                    setMovie({
-                        ...movieDetails,
-                        cast: movieCast.cast,
-                        crew: movieCrew,
-                        links: movieExternalLinks,
-                        tags: movieTags.keywords,
-                        similarMovies: similarMovies.results.slice(0, 10),
-                        latestTrailer
+    useEffect(() => {
+        async function GetMovieDetails() {
+            scrollToTop();
+            setIsLoading(true);
+
+            const movieDetails = await MovieService.getMovieDetails(id);
+            const movieCast = await MovieService.getMovieCast(id);
+            const movieExternalLinks = await MovieService.getMovieExternalLinks(id);
+            const movieTags = await MovieService.getMovieTags(id);
+            const movieVideos = await MovieService.getMovieVideos(id);
+            const similarMovies = await MovieService.getSimilarMovies(id, 1);
+            let latestTrailer;
+
+            const movieCrew = movieCast.crew.filter(member => {
+                return member.job === "Director" || member.job === "Writer" || member.job === "Characters";
+            });
+
+            if (movieVideos.results.length > 0) {
+                const movieTrailers = movieVideos.results.filter((video) => video.type === 'Trailer');
+                if (movieTrailers.length > 0) {
+                    latestTrailer = movieTrailers.reduce((prev, current) => {
+                        return (new Date(current.published_at) > new Date(prev.published_at)) ? current : prev;
                     });
                 }
-
-
-                GetMovieDetails();
-            }, [id])
-
-            function convertMinutesToHours(minutes) {
-                let h = Math.floor(minutes / 60);
-                let m = minutes % 60;
-                return `${h}h ${m}m`;
             }
 
+            console.log(movieDetails)
 
-            return (
+            setMovie({
+                ...movieDetails,
+                cast: movieCast.cast,
+                crew: movieCrew,
+                links: movieExternalLinks,
+                tags: movieTags.keywords,
+                similarMovies: similarMovies.results.slice(0, 10),
+                latestTrailer
+            });
+
+            setIsLoading(false);
+        }
+
+
+        GetMovieDetails();
+    }, [id])
+
+    function convertMinutesToHours(minutes) {
+        let h = Math.floor(minutes / 60);
+        let m = minutes % 60;
+        return `${h}h ${m}m`;
+    }
+
+
+    return (
+        <div className="mainContainer">
+            <Navbar />
+
+            {isLoading ? (
+                <div className="loading mt-5">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                        <span className="absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                    </div>
+                </div>
+            ) : (
                 <>
-                    <Navbar />
-                    
                     <div className='w-100 bg-red d-flex header' style={
                         {
                             backgroundImage: `url(https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${movie?.backdrop_path})`
@@ -78,7 +107,14 @@ import Navbar from './Navbar';
                             <img src={`https://image.tmdb.org/t/p/w300${movie?.poster_path}`} alt='movieposter'></img>
 
                             <div className='d-flex flex-col flex-wrap px-5 pt-4 details'>
-                                <h2>{movie?.title}</h2>
+                                <div className='d-flex'>
+                                    <h2>{movie?.title}</h2>
+                                    <button className={`ms-3 ${isMovieSaved ? 'saved' : ''}`} onClick={toggleSaveMovieHandle}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                                        </svg>
+                                    </button>
+                                </div>
                                 <div className='d-flex flex-wrap mt-1'>
                                     <p className='text-base'>{movie?.release_date} </p>
                                     <p className='text-base'>({movie?.original_language?.toUpperCase()})</p>
@@ -202,8 +238,10 @@ import Navbar from './Navbar';
                         </div>
 
                     </div>
-
-                    <Footer />
                 </>
-            );
-        }
+            )}
+
+            <Footer className="footer" />
+        </div>
+    );
+}

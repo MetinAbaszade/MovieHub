@@ -1,5 +1,7 @@
+// Libraries
 import React from 'react'
-import './CastMember.css'
+// Styles
+import '../assets/CastMember.css'
 
 export default function CastMember({ castmember }) {
     return (
