@@ -8,8 +8,7 @@
             if (filter) {
                 url = addFiltersToUrl(url, filter)
             }
-            const result = await get(url);
-            console.log(url)
+            const result = await get(url); 
             return result;
         } catch (error) {
             console.error(`Error getting movies with category ${category} and page ${page}: `, error);
@@ -105,8 +104,7 @@
     }
 
     export function addFiltersToUrl(url, filter) {
-        let filteredUrl = url;
-        console.log(filter.runtime)
+        let filteredUrl = url; 
         if (filter.rating) {
             filteredUrl += `&vote_average.gte=${filter.rating}`
         }

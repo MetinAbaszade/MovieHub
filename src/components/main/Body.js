@@ -102,13 +102,13 @@ export default function Body() {
                             <div className='portfolio-menu text-center'>
                                 <ul>
                                     <li onClick={handleCategoryClick.bind(null, 'popular')}
-                                        className={activeCategory === 'popular' ? 'active' : ''}>Popular</li>
+                                        className={activeCategory === 'popular' ? 'active mx-3' : 'mx-3'}>Popular</li>
                                     <li onClick={handleCategoryClick.bind(null, 'now_playing')}
-                                        className={activeCategory === 'now_playing' ? 'active' : ''}>Now Playing</li>
+                                        className={activeCategory === 'now_playing' ? 'active mx-3' : 'mx-3'}>Now Playing</li>
                                     <li onClick={handleCategoryClick.bind(null, 'top_rated')}
-                                        className={activeCategory === 'top_rated' ? 'active' : ''}>Top Rated</li>
+                                        className={activeCategory === 'top_rated' ? 'active mx-3' : 'mx-3'}>Top Rated</li>
                                     <li onClick={handleCategoryClick.bind(null, 'upcoming')}
-                                        className={activeCategory === 'upcoming' ? 'active' : ''}>Upcoming Movies</li>
+                                        className={activeCategory === 'upcoming' ? 'active mx-3' : 'mx-3'}>Upcoming Movies</li>
                                 </ul>
                             </div>
                         </div>

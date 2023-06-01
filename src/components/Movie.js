@@ -4,16 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleSaveMovie } from '../redux/savedMoviesSlice';
 
 function Movie({ movieDetails }) {
-    const dispatch = useDispatch();
-    console.log("movieDetails.id: " + movieDetails.id)
+    const dispatch = useDispatch(); 
     const selectIsMovieSaved = (state, movieId) => state.savedMovies.includes(movieId);
 
     const isMovieSaved = useSelector(state => {
-        console.log("state.savedMovies: ")
-        console.log(state.savedMovies)
-        console.log('movieDetails.id')
-        console.log(movieDetails.id)
-        console.log("includes " + state.savedMovies.includes(movieDetails.id));
         return selectIsMovieSaved(state, movieDetails.id)
     });
 
