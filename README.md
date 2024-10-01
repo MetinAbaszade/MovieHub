@@ -1,70 +1,40 @@
-# Getting Started with Create React App
+# 🎬 MovieHub
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+MovieHub is an interactive movie website built with **React** and **Redux**, where users can explore, search, and filter movies by various criteria, such as category and rating. Users can also view upcoming and trending movies, save their favorites, and see detailed information like trailers, actors, budget, and revenue. All movie data is fetched from a third-party API.
 
-## Available Scripts
+## 🛠️ Features
 
-In the project directory, you can run:
+- **Search Movies**: Search for any movie by title.
+- **Filter by Category and Rating**: Narrow down movies based on categories like genre, and filter by rating.
+- **Upcoming and Trending Movies**: Discover upcoming blockbusters and trending hits.
+- **Save Favorite Movies**: Bookmark your favorite movies to easily revisit later.
+- **Detailed Movie Pages**: Get in-depth details such as:
+  - Watch trailers
+  - View actors and their roles
+  - See budget and revenue stats
+- **Responsive Design**: Enjoy seamless browsing on any device.
 
-### `npm start`
+## 🚀 Technologies Used
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **React**: Built with modern React features like hooks (`useState`, `useEffect`, `useMemo`) for managing component state and effects.
+- **Redux**: Global state management for managing movie data, search filters, and user saved movies.
+- **React Router**: Handles navigation and routing within the app.
+- **Redux Thunk**: Used for handling asynchronous actions such as fetching movie data from the API.
+- **Movie Database API**: Integration with a third-party API to fetch movie details.
+- **CSS Modules**: Scoped CSS for styling components with no class name collisions.
+  
+## 🔑 Key React Concepts Used
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **React Hooks**: 
+  - `useState` for managing local component states.
+  - `useEffect` for fetching data and performing side effects.
+  - `useMemo` for memoizing expensive computations (e.g., filtering movies).
+- **Redux**:
+  - Store and actions for centralized global state management.
+  - **Reducers** to handle complex state transitions.
+  - **Selectors** to efficiently select data from the store.
+- **React Router**: Dynamic routing to different pages such as Home, Movie Details, and Saved Movies.
 
-### `npm test`
+## 🎥 Demo
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+You can check out a live demo of the project [Youtube Link](https://youtu.be/dct1IEBMP5Y?si=KIEzsunYYx_vCgln)
