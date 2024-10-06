@@ -1,4 +1,4 @@
-# 🎬 MovieHub
+# 🎬 [MovieHub](https://metinabaszade.github.io/MovieHub/)
 
 MovieHub is an interactive movie website built with **React** and **Redux**, where users can explore, search, and filter movies by various criteria, such as category and rating. Users can also view upcoming and trending movies, save their favorites, and see detailed information like trailers, actors, budget, and revenue. All movie data is fetched from a third-party API.
 
